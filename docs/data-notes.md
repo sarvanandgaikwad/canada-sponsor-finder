@@ -56,9 +56,26 @@ Licence: Open Government Licence – Canada
 - Very few tech LMIAs in Atlantic Canada, so AIP lists are needed as a separate source
 
 ## AIP designated employer lists
-| Province | URL | Format | ~Employers | Notes |
-|---|---|---|---|---|
-| NS | | | | |
-| NB | | | | |
-| PEI | | | | |
-| NL | | | | |
+No federal list exists; each province publishes its own. Being on a list does not mean the employer is hiring.
+Files saved manually in `data/raw/aip/` (sites block automated downloads).
+
+| Province | File | Format | As of | Employers | Fields | Name style |
+|---|---|---|---|---|---|---|
+| NS | ns_designated_employers_2026-11-10.pdf | PDF bullet list (38 pp) | 2026-07-01 | 1,574 | Name | `Legal o/a Operating` |
+| NB | nb_designated_employers_2026-11-10.pdf | PDF bullet list, EN/FR (46 pp) | 2026-10 (footer 2026-08) | 1,263 | Name | `Operating (Legal)` |
+| NL | nl_designated_employers_2026-11-10.html | HTML table | saved 2026-11-10 | 650 | Name, Location, Date Designated, NOC, NAIC | `Legal o/a Operating` (some `a/o`) |
+| PEI | pei_designated_employers_2026-11-10.html | HTML bullet list | saved 2026-11-10 | 394 | Name | mixed |
+
+Sources:
+- NS: https://liveinnovascotia.com/atlantic-immigration-program (URL path says 2024-07 but content is July 2026)
+- NB: https://www.gnb.ca/en/topic/family-home-community/immigration/atlantic-immigration-program.html
+- NL: https://www.gov.nl.ca/immigration/immigrating-to-newfoundland-and-labrador/atlantic-immigration-program/designated-employers/
+- PEI: https://www.princeedwardisland.ca/en/information/office-of-immigration/atlantic-immigration-program-designated-employers
+
+### Implications for Phase 3
+- Manual download → automated parsing (PDF: pdfplumber, bullet lines starting with "•"; HTML: BeautifulSoup / pd.read_html)
+- Name parsing differs by province: split `o/a` (NS, NL; watch for `a/o`) vs `Operating (Legal)` (NB)
+- Only NL has NOC/NAIC; other provinces need name matching to LMIA data to tag tech employers
+- NL: multiple NOCs per cell, mixed NOC 2011/2021; 78 blank dates; 314 blank NAIC; "St John's" vs "St. John's"
+- A tech NOC ≠ a tech company (restaurants list 21232); use NAIC 51/54 to confirm
+- Record the list's "as of" date on every load
